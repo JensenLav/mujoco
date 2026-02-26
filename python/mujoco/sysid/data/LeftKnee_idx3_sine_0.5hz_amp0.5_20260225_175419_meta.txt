@@ -1,0 +1,10 @@
+joint_index: 3
+joint_name: LeftKnee
+signal: sine_0.5hz
+amplitude: 0.5
+kp: 100.0
+kd: 3.0
+control_dt: 0.002
+excite_duration: 20.0
+frequency: 0.5
+num_samples: 10000
