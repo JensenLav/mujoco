@@ -1,0 +1,9 @@
+joint_indices: [2, 3]
+joint_names: ['LeftHipRoll', 'LeftKnee']
+signal: chirp
+amplitude: 0.15
+control_dt: 0.002
+excite_duration: 20.0
+f_start: 0.2
+f_end: 5.0
+num_samples: 10000
