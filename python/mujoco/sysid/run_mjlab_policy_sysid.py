@@ -335,6 +335,39 @@ def _joint_to_csv(mj_name: str) -> str:
     return "".join(w.capitalize() for w in base.split("_"))
 
 
+def _quat_normalize_wxyz(q: np.ndarray) -> np.ndarray:
+    q = np.asarray(q, dtype=np.float64).reshape(4)
+    n = np.linalg.norm(q)
+    if n < 1e-12:
+        return np.array([1.0, 0.0, 0.0, 0.0])
+    return q / n
+
+
+def _quat_mul_wxyz(q1: np.ndarray, q2: np.ndarray) -> np.ndarray:
+    """Hamilton product q1 * q2 (wxyz)."""
+    w1, x1, y1, z1 = q1
+    w2, x2, y2, z2 = q2
+    return np.array(
+        [
+            w1 * w2 - x1 * x2 - y1 * y2 - z1 * z2,
+            w1 * x2 + x1 * w2 + y1 * z2 - z1 * y2,
+            w1 * y2 - x1 * z2 + y1 * w2 + z1 * x2,
+            w1 * z2 + x1 * y2 - y1 * x2 + z1 * w2,
+        ],
+        dtype=np.float64,
+    )
+
+
+def _quat_conj_wxyz(q: np.ndarray) -> np.ndarray:
+    return np.array([q[0], -q[1], -q[2], -q[3]], dtype=np.float64)
+
+
+def _quat_z_rotation_wxyz(angle: float) -> np.ndarray:
+    """Unit quaternion for rotation about +Z by angle (radians), wxyz."""
+    ha = 0.5 * angle
+    return np.array([np.cos(ha), 0.0, 0.0, np.sin(ha)], dtype=np.float64)
+
+
 def load_real_data(
     csv_path: str | Path,
     model: mujoco.MjModel,
@@ -345,6 +378,13 @@ def load_real_data(
     Reads the CSV, maps joint columns into MuJoCo ctrl and sensor arrays,
     and runs a nominal sim rollout to produce the state array needed for
     clip segmentation.
+
+    Initial floating-base orientation: if ``imu_quat_*`` columns are present,
+    the pelvis quaternion is set from the first-row IMU quaternion so the
+    simulated ``imu_quat`` sensor matches the log at t=0 (see
+    REAL_ROBOT_DATA_COLLECTION.md). This uses ``Torso_q_meas`` when present
+    because the IMU site is on ``torso_link`` and ``torso_joint`` is about
+    pelvis +Z.
     """
     import pandas as pd
 
@@ -396,7 +436,14 @@ def load_real_data(
     # Build initial state from first measurement
     data_nom = mujoco.MjData(model)
     mujoco.mj_resetData(model, data_nom)
-    data_nom.qpos[2] = 1.02
+
+    fj_id = mujoco.mj_name2id(model, mujoco.mjtObj.mjOBJ_JOINT, "pelvis_freejoint")
+    if fj_id < 0:
+        raise ValueError("Model must define joint 'pelvis_freejoint' for real-data init.")
+    fqadr = int(model.jnt_qposadr[fj_id])
+    # Default height (matches sim collector / training-style init)
+    data_nom.qpos[fqadr + 2] = 1.02
+
     for jn in joints:
         csv_jn = _joint_to_csv(jn)
         jnt_id = mujoco.mj_name2id(model, mujoco.mjtObj.mjOBJ_JOINT, jn)
@@ -407,6 +454,25 @@ def load_real_data(
                 data_nom.qpos[model.jnt_qposadr[jnt_id]] = df[q_col].iloc[0]
             if dq_col in df.columns:
                 data_nom.qvel[model.jnt_dofadr[jnt_id]] = df[dq_col].iloc[0]
+
+    # Torso encoder at t=0 (recommended when using IMU — site is on torso_link)
+    torso_jid = mujoco.mj_name2id(model, mujoco.mjtObj.mjOBJ_JOINT, "torso_joint")
+    if torso_jid >= 0:
+        tcol = f"{_joint_to_csv('torso_joint')}_q_meas"
+        if tcol in df.columns:
+            data_nom.qpos[model.jnt_qposadr[torso_jid]] = df[tcol].iloc[0]
+
+    imu_quat_cols = ["imu_quat_w", "imu_quat_x", "imu_quat_y", "imu_quat_z"]
+    if all(c in df.columns for c in imu_quat_cols):
+        q_imu = _quat_normalize_wxyz(
+            np.array([df[c].iloc[0] for c in imu_quat_cols], dtype=np.float64)
+        )
+        q_torso = 0.0
+        if torso_jid >= 0:
+            q_torso = float(data_nom.qpos[model.jnt_qposadr[torso_jid]])
+        # R_world_torso = R_world_pelvis @ Rz(q_torso)  =>  q_pelvis = q_imu * conj(Rz(q_torso))
+        q_pelvis = _quat_mul_wxyz(q_imu, _quat_conj_wxyz(_quat_z_rotation_wxyz(q_torso)))
+        data_nom.qpos[fqadr + 3 : fqadr + 7] = _quat_normalize_wxyz(q_pelvis)
 
     init_state = sysid.create_initial_state(
         model, data_nom.qpos, data_nom.qvel, data_nom.act,
@@ -776,6 +842,12 @@ def main():
         print(f"  Median relative error:           {np.median(rel_errors):.1f}%")
     print("=" * 70)
 
+    out_dir = Path(__file__).resolve().parent
+    params.save_to_disk(out_dir / "h1_2_mjlab_policy_params_x_0.yaml")
+    opt_params.save_to_disk(out_dir / "h1_2_mjlab_policy_params_x_hat.yaml")
+    print(f"\n  Wrote initial parameters:  {out_dir / 'h1_2_mjlab_policy_params_x_0.yaml'}")
+    print(f"  Wrote learned parameters:  {out_dir / 'h1_2_mjlab_policy_params_x_hat.yaml'}")
+
     # ------------------------------------------------------------------
     # Comparison videos
     # ------------------------------------------------------------------
@@ -807,7 +879,14 @@ def main():
             set_body_rgba(s.worldbody, rgba)
             return s.compile()
 
-        def run_policy_closed_loop(vid_model, onnx_session, duration_s, cmd):
+        def run_policy_closed_loop(
+            vid_model,
+            onnx_session,
+            duration_s,
+            cmd,
+            cmd_after: np.ndarray | None = None,
+            switch_at_s: float | None = None,
+        ):
             vid_data = mujoco.MjData(vid_model)
             act_names = [vid_model.actuator(i).name for i in range(vid_model.nu)]
             mjlab_to_act = [act_names.index(jn) for jn in MJLAB_JOINT_ORDER]
@@ -827,9 +906,12 @@ def main():
             state_log = np.zeros((n_steps, nstate))
             last_act = np.zeros(27, dtype=np.float32)
             input_name = onnx_session.get_inputs()[0].name
+            use_switch = cmd_after is not None and switch_at_s is not None
             for step in range(n_steps):
+                t = step * SIM_DT
+                vel_cmd = cmd_after if use_switch and t >= switch_at_s else cmd
                 if step % DECIMATION == 0:
-                    obs = build_obs(vid_model, vid_data, cmd, last_act, act_names)
+                    obs = build_obs(vid_model, vid_data, vel_cmd, last_act, act_names)
                     raw = onnx_session.run(None, {input_name: obs})[0][0]
                     last_act = raw.copy()
                     targets = DEFAULT_JOINT_POS + raw * ACTION_SCALE
@@ -858,28 +940,55 @@ def main():
             true_params[f"{name}_kp"].value[:] = TRUE_KP[name]
             true_params[f"{name}_kv"].value[:] = TRUE_KV[name]
 
-        green = [0.2, 0.8, 0.2, 0.7]
-        red   = [1.0, 0.2, 0.2, 0.7]
-        blue  = [0.2, 0.4, 1.0, 0.7]
+        truth_rgba = [0.0, 0.259, 0.145, 0.7]
+        initial_rgba = [106 / 255, 109 / 255, 114 / 255, 0.7]  # Porsche Atlas Grey Metallic M7X ~#6A6D72
+        optimized_rgba = [247 / 255, 80 / 255, 15 / 255, 0.7]  # Field AI logo #F7500F
 
-        truth_model = make_colored_model(spec, green, true_params)
-        init_model  = make_colored_model(spec, red, init_params)
-        opt_model   = make_colored_model(spec, blue, opt_params)
+        truth_model = make_colored_model(spec, truth_rgba, true_params)
+        init_model = make_colored_model(spec, initial_rgba, init_params)
+        opt_model = make_colored_model(spec, optimized_rgba, opt_params)
 
-        vid_duration = 10.0
+        vid_duration = 30.0
         fps = 30
         camera = "head_on"
 
-        vid_cmd = np.array([0.4, 0.0, 0.4], dtype=np.float32)  # walk forward + turn
-        print(f"    Using velocity command: {vid_cmd}")
-        print("    Running policy on TRUTH model (green)...")
-        state_truth = run_policy_closed_loop(truth_model, session, vid_duration, vid_cmd)
-        print("    Running policy on INITIAL model (red)...")
-        state_init = run_policy_closed_loop(init_model, session, vid_duration, vid_cmd)
-        print("    Running policy on OPTIMIZED model (blue)...")
-        state_opt = run_policy_closed_loop(opt_model, session, vid_duration, vid_cmd)
+        vid_cmd_straight = np.array([0.5, 0.0, 0.0], dtype=np.float32)
+        vid_cmd_turn_right = np.array([0.35, 0.0, -0.5], dtype=np.float32)
+        vid_cmd_switch_s = vid_duration * 0.5
+        print(
+            "    Video commands: "
+            f"straight {vid_cmd_straight} for 0–{vid_cmd_switch_s:.1f}s, "
+            f"then right turn {vid_cmd_turn_right}"
+        )
+        print("    Running policy on TRUTH model (racing green)...")
+        state_truth = run_policy_closed_loop(
+            truth_model,
+            session,
+            vid_duration,
+            vid_cmd_straight,
+            cmd_after=vid_cmd_turn_right,
+            switch_at_s=vid_cmd_switch_s,
+        )
+        print("    Running policy on INITIAL model (Porsche Atlas Grey M7X)...")
+        state_init = run_policy_closed_loop(
+            init_model,
+            session,
+            vid_duration,
+            vid_cmd_straight,
+            cmd_after=vid_cmd_turn_right,
+            switch_at_s=vid_cmd_switch_s,
+        )
+        print("    Running policy on OPTIMIZED model (orange)...")
+        state_opt = run_policy_closed_loop(
+            opt_model,
+            session,
+            vid_duration,
+            vid_cmd_straight,
+            cmd_after=vid_cmd_turn_right,
+            switch_at_s=vid_cmd_switch_s,
+        )
 
-        print("    Rendering BEFORE (initial=red vs truth=green)...")
+        print("    Rendering BEFORE (initial=Atlas Grey vs truth=racing green)...")
         state_before = np.stack([state_init, state_truth], axis=0)
         models_before = [init_model, truth_model]
         datas_before = [mujoco.MjData(m) for m in models_before]
@@ -888,7 +997,7 @@ def main():
             framerate=fps, camera=camera, height=720, width=1280,
         )
 
-        print("    Rendering AFTER (optimized=blue vs truth=green)...")
+        print("    Rendering AFTER (optimized=orange vs truth=racing green)...")
         state_after = np.stack([state_opt, state_truth], axis=0)
         models_after = [opt_model, truth_model]
         datas_after = [mujoco.MjData(m) for m in models_after]
@@ -912,8 +1021,8 @@ def main():
         media.write_video("mjlab_spi_before.mp4", frames_before, fps=fps)
         media.write_video("mjlab_spi_after.mp4", frames_after, fps=fps)
         print("  Saved: mjlab_spi_comparison.mp4")
-        print("  Saved: mjlab_spi_before.mp4  (initial=red vs truth=green)")
-        print("  Saved: mjlab_spi_after.mp4   (optimized=blue vs truth=green)")
+        print("  Saved: mjlab_spi_before.mp4  (initial=Atlas Grey vs truth=racing green)")
+        print("  Saved: mjlab_spi_after.mp4   (optimized=orange vs truth=racing green)")
 
     # ------------------------------------------------------------------
     # Cost landscapes: kp vs kv for ALL 12 leg joints

@@ -76,6 +76,20 @@ Avoid only a single repetitive stride if you want stable estimates across `kp`, 
 - **Signs and zero**: Same definition as in your URDF / MJCF (e.g. hip pitch zero pose). A sign flip on one joint will break the fit.  
 - **Command**: `q_cmd` must be the **same** quantity the policy outputs after any scaling/offset your deploy stack applies **before** the motor PD (i.e. what MjLab would call the position target for that joint).
 
+## Base pose, IMU frame, and t=0 alignment
+
+Open-loop sysID compares **simulated** IMU sensors to your **logged** IMU. The simulator’s initial full physics state (especially floating base pose) must match the robot at the **first log row** (t=0), or attitude/ gravity terms in `imu_quat` / `imu_acc` will disagree before the dynamics even evolve.
+
+**What matters**
+
+1. **Quaternion convention**: Log `imu_quat_*` as a **unit quaternion in w, x, y, z order**, in the **same meaning** as MuJoCo’s `framequat` on the `imu` site (orientation of that site frame in world coordinates). If your estimator uses a different frame (e.g. NED vs your MJCF world) or **x,y,z,w** order, convert offline before CSV import.
+2. **Static check**: With the robot in a known fixed pose, run a one-step MuJoCo readout of `imu_quat` and compare to your log. If there is a **constant** rotation offset, multiply your logged quaternion by that fixed correction on every row (or fix the estimator frame).
+3. **IMU is on the torso, not the pelvis**: In the bundled H1_2 MJCF, the `imu` site sits on **`torso_link`**, while the floating base is **`pelvis_freejoint`**. The loader sets pelvis orientation from the first IMU sample using  
+   `q_pelvis = q_imu ⊗ conj(R_z(q_torso))`  
+   so that **world orientation of the torso** matches the log when `torso_joint` rotates about pelvis +Z. For that, include **`Torso_q_meas`** (first row and time series) whenever you use IMU — same naming pattern as leg joints (`Torso_q_meas`, etc.).
+4. **Horizontal position**: Initial `x, y` are left at zero with a fixed `z` (nominal standing height). For long clips or large drift, consider logging base position and extending the loader; for short segments, attitude alignment is usually the dominant issue.
+5. **Base velocity**: If your state estimator provides base angular/linear velocity at t=0, initializing the free-joint `qvel` slice can improve the first few IMU samples; the current loader leaves default base velocities after `mj_resetData` except for joint `dq_meas` on the joints it fills.
+
 ## Optional columns (not required by current loader)
 
 `data_collect.py` can also write `dq_cmd`, `tau_cmd`, `ddq_meas` for traceability. **`run_mjlab_policy_sysid.load_real_data` does not read those** today; they are still useful for debugging and future residuals.
@@ -97,6 +111,7 @@ The sim collector writes `{stem}_meta.txt` with `joint_names`, `control_dt`, etc
 - [ ] All 12 leg joints: `_q_cmd`, `_q_meas`, `_dq_meas`, `_tau_meas` present  
 - [ ] CamelCase names match the table above  
 - [ ] IMU quaternion + gyro + accel present and time-aligned (if using default observations)  
+- [ ] `Torso_q_meas` present if using IMU (torso-mounted IMU vs pelvis free joint — see “Base pose, IMU frame”)  
 - [ ] Units: rad, rad/s, N·m, m/s² for accel  
 - [ ] Multiple clips with different velocities / turns  
 - [ ] Torque estimate validated (bad `tau_meas` will distort gains and friction)

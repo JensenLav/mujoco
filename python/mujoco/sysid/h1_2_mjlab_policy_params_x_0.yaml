@@ -1,0 +1,660 @@
+left_ankle_pitch_joint_armature:
+  frozen: false
+  max_value:
+  - 0.05
+  min_value:
+  - 0.001
+  name: left_ankle_pitch_joint_armature
+  nominal:
+  - 0.005
+  value:
+  - 0.006493578551364182
+left_ankle_pitch_joint_damping:
+  frozen: false
+  max_value:
+  - 2.0
+  min_value:
+  - 0.0
+  name: left_ankle_pitch_joint_damping
+  nominal:
+  - 0.0
+  value:
+  - 0.0
+left_ankle_pitch_joint_friction:
+  frozen: false
+  max_value:
+  - 1.0
+  min_value:
+  - 0.0
+  name: left_ankle_pitch_joint_friction
+  nominal:
+  - 0.0
+  value:
+  - 0.0
+left_ankle_pitch_joint_kp:
+  frozen: false
+  max_value:
+  - 50.0
+  min_value:
+  - 5.0
+  name: left_ankle_pitch_joint_kp
+  nominal:
+  - 19.7
+  value:
+  - 21.63673588552052
+left_ankle_pitch_joint_kv:
+  frozen: false
+  max_value:
+  - 5.0
+  min_value:
+  - 0.1
+  name: left_ankle_pitch_joint_kv
+  nominal:
+  - 1.3
+  value:
+  - 1.9117273487078381
+left_ankle_roll_joint_armature:
+  frozen: false
+  max_value:
+  - 0.05
+  min_value:
+  - 0.001
+  name: left_ankle_roll_joint_armature
+  nominal:
+  - 0.005
+  value:
+  - 0.003468348115982643
+left_ankle_roll_joint_damping:
+  frozen: false
+  max_value:
+  - 2.0
+  min_value:
+  - 0.0
+  name: left_ankle_roll_joint_damping
+  nominal:
+  - 0.0
+  value:
+  - 4.583954004167851e-05
+left_ankle_roll_joint_friction:
+  frozen: false
+  max_value:
+  - 1.0
+  min_value:
+  - 0.0
+  name: left_ankle_roll_joint_friction
+  nominal:
+  - 0.0
+  value:
+  - 0.0
+left_ankle_roll_joint_kp:
+  frozen: false
+  max_value:
+  - 50.0
+  min_value:
+  - 5.0
+  name: left_ankle_roll_joint_kp
+  nominal:
+  - 19.7
+  value:
+  - 14.34795296380196
+left_ankle_roll_joint_kv:
+  frozen: false
+  max_value:
+  - 5.0
+  min_value:
+  - 0.1
+  name: left_ankle_roll_joint_kv
+  nominal:
+  - 1.3
+  value:
+  - 0.8161855400586923
+left_hip_pitch_joint_armature:
+  frozen: false
+  max_value:
+  - 0.1
+  min_value:
+  - 0.005
+  name: left_hip_pitch_joint_armature
+  nominal:
+  - 0.025
+  value:
+  - 0.03139055081725224
+left_hip_pitch_joint_damping:
+  frozen: false
+  max_value:
+  - 2.0
+  min_value:
+  - 0.0
+  name: left_hip_pitch_joint_damping
+  nominal:
+  - 0.0
+  value:
+  - 0.0
+left_hip_pitch_joint_friction:
+  frozen: false
+  max_value:
+  - 1.0
+  min_value:
+  - 0.0
+  name: left_hip_pitch_joint_friction
+  nominal:
+  - 0.0
+  value:
+  - 0.0
+left_hip_pitch_joint_kp:
+  frozen: false
+  max_value:
+  - 180.0
+  min_value:
+  - 50.0
+  name: left_hip_pitch_joint_kp
+  nominal:
+  - 98.7
+  value:
+  - 83.31906666855394
+left_hip_pitch_joint_kv:
+  frozen: false
+  max_value:
+  - 15.0
+  min_value:
+  - 1.0
+  name: left_hip_pitch_joint_kv
+  nominal:
+  - 6.3
+  value:
+  - 7.695188628755215
+left_hip_roll_joint_armature:
+  frozen: false
+  max_value:
+  - 0.1
+  min_value:
+  - 0.005
+  name: left_hip_roll_joint_armature
+  nominal:
+  - 0.025
+  value:
+  - 0.030634223693137307
+left_hip_roll_joint_damping:
+  frozen: false
+  max_value:
+  - 2.0
+  min_value:
+  - 0.0
+  name: left_hip_roll_joint_damping
+  nominal:
+  - 0.0
+  value:
+  - 0.0
+left_hip_roll_joint_friction:
+  frozen: false
+  max_value:
+  - 1.0
+  min_value:
+  - 0.0
+  name: left_hip_roll_joint_friction
+  nominal:
+  - 0.0
+  value:
+  - 0.0
+left_hip_roll_joint_kp:
+  frozen: false
+  max_value:
+  - 180.0
+  min_value:
+  - 50.0
+  name: left_hip_roll_joint_kp
+  nominal:
+  - 98.7
+  value:
+  - 88.70111070141928
+left_hip_roll_joint_kv:
+  frozen: false
+  max_value:
+  - 15.0
+  min_value:
+  - 1.0
+  name: left_hip_roll_joint_kv
+  nominal:
+  - 6.3
+  value:
+  - 8.821284612050551
+left_hip_yaw_joint_armature:
+  frozen: false
+  max_value:
+  - 0.1
+  min_value:
+  - 0.005
+  name: left_hip_yaw_joint_armature
+  nominal:
+  - 0.025
+  value:
+  - 0.017503601321201885
+left_hip_yaw_joint_damping:
+  frozen: false
+  max_value:
+  - 2.0
+  min_value:
+  - 0.0
+  name: left_hip_yaw_joint_damping
+  nominal:
+  - 0.0
+  value:
+  - 0.0
+left_hip_yaw_joint_friction:
+  frozen: false
+  max_value:
+  - 1.0
+  min_value:
+  - 0.0
+  name: left_hip_yaw_joint_friction
+  nominal:
+  - 0.0
+  value:
+  - 0.0
+left_hip_yaw_joint_kp:
+  frozen: false
+  max_value:
+  - 180.0
+  min_value:
+  - 50.0
+  name: left_hip_yaw_joint_kp
+  nominal:
+  - 98.7
+  value:
+  - 119.96656884363965
+left_hip_yaw_joint_kv:
+  frozen: false
+  max_value:
+  - 15.0
+  min_value:
+  - 1.0
+  name: left_hip_yaw_joint_kv
+  nominal:
+  - 6.3
+  value:
+  - 7.8355075264583744
+left_knee_joint_armature:
+  frozen: false
+  max_value:
+  - 0.15
+  min_value:
+  - 0.01
+  name: left_knee_joint_armature
+  nominal:
+  - 0.04
+  value:
+  - 0.04285004422574732
+left_knee_joint_damping:
+  frozen: false
+  max_value:
+  - 2.0
+  min_value:
+  - 0.0
+  name: left_knee_joint_damping
+  nominal:
+  - 0.0
+  value:
+  - 1.367656070616142e-05
+left_knee_joint_friction:
+  frozen: false
+  max_value:
+  - 1.0
+  min_value:
+  - 0.0
+  name: left_knee_joint_friction
+  nominal:
+  - 0.0
+  value:
+  - 0.0
+left_knee_joint_kp:
+  frozen: false
+  max_value:
+  - 250.0
+  min_value:
+  - 80.0
+  name: left_knee_joint_kp
+  nominal:
+  - 157.7
+  value:
+  - 215.96352491267834
+left_knee_joint_kv:
+  frozen: false
+  max_value:
+  - 18.0
+  min_value:
+  - 3.0
+  name: left_knee_joint_kv
+  nominal:
+  - 10.1
+  value:
+  - 5.696861555411
+right_ankle_pitch_joint_armature:
+  frozen: false
+  max_value:
+  - 0.05
+  min_value:
+  - 0.001
+  name: right_ankle_pitch_joint_armature
+  nominal:
+  - 0.005
+  value:
+  - 0.003358757151622586
+right_ankle_pitch_joint_damping:
+  frozen: false
+  max_value:
+  - 2.0
+  min_value:
+  - 0.0
+  name: right_ankle_pitch_joint_damping
+  nominal:
+  - 0.0
+  value:
+  - 2.3464548065629705e-05
+right_ankle_pitch_joint_friction:
+  frozen: false
+  max_value:
+  - 1.0
+  min_value:
+  - 0.0
+  name: right_ankle_pitch_joint_friction
+  nominal:
+  - 0.0
+  value:
+  - 1.3304400259790273e-05
+right_ankle_pitch_joint_kp:
+  frozen: false
+  max_value:
+  - 50.0
+  min_value:
+  - 5.0
+  name: right_ankle_pitch_joint_kp
+  nominal:
+  - 19.7
+  value:
+  - 21.12138424677132
+right_ankle_pitch_joint_kv:
+  frozen: false
+  max_value:
+  - 5.0
+  min_value:
+  - 0.1
+  name: right_ankle_pitch_joint_kv
+  nominal:
+  - 1.3
+  value:
+  - 0.7983187442592449
+right_ankle_roll_joint_armature:
+  frozen: false
+  max_value:
+  - 0.05
+  min_value:
+  - 0.001
+  name: right_ankle_roll_joint_armature
+  nominal:
+  - 0.005
+  value:
+  - 0.007133569635559437
+right_ankle_roll_joint_damping:
+  frozen: false
+  max_value:
+  - 2.0
+  min_value:
+  - 0.0
+  name: right_ankle_roll_joint_damping
+  nominal:
+  - 0.0
+  value:
+  - 0.0
+right_ankle_roll_joint_friction:
+  frozen: false
+  max_value:
+  - 1.0
+  min_value:
+  - 0.0
+  name: right_ankle_roll_joint_friction
+  nominal:
+  - 0.0
+  value:
+  - 0.0
+right_ankle_roll_joint_kp:
+  frozen: false
+  max_value:
+  - 50.0
+  min_value:
+  - 5.0
+  name: right_ankle_roll_joint_kp
+  nominal:
+  - 19.7
+  value:
+  - 27.44644517453458
+right_ankle_roll_joint_kv:
+  frozen: false
+  max_value:
+  - 5.0
+  min_value:
+  - 0.1
+  name: right_ankle_roll_joint_kv
+  nominal:
+  - 1.3
+  value:
+  - 0.7110434327476174
+right_hip_pitch_joint_armature:
+  frozen: false
+  max_value:
+  - 0.1
+  min_value:
+  - 0.005
+  name: right_hip_pitch_joint_armature
+  nominal:
+  - 0.025
+  value:
+  - 0.03246032988131893
+right_hip_pitch_joint_damping:
+  frozen: false
+  max_value:
+  - 2.0
+  min_value:
+  - 0.0
+  name: right_hip_pitch_joint_damping
+  nominal:
+  - 0.0
+  value:
+  - 0.0
+right_hip_pitch_joint_friction:
+  frozen: false
+  max_value:
+  - 1.0
+  min_value:
+  - 0.0
+  name: right_hip_pitch_joint_friction
+  nominal:
+  - 0.0
+  value:
+  - 0.0
+right_hip_pitch_joint_kp:
+  frozen: false
+  max_value:
+  - 180.0
+  min_value:
+  - 50.0
+  name: right_hip_pitch_joint_kp
+  nominal:
+  - 98.7
+  value:
+  - 140.67693725941058
+right_hip_pitch_joint_kv:
+  frozen: false
+  max_value:
+  - 15.0
+  min_value:
+  - 1.0
+  name: right_hip_pitch_joint_kv
+  nominal:
+  - 6.3
+  value:
+  - 4.987170186095694
+right_hip_roll_joint_armature:
+  frozen: false
+  max_value:
+  - 0.1
+  min_value:
+  - 0.005
+  name: right_hip_roll_joint_armature
+  nominal:
+  - 0.025
+  value:
+  - 0.02298652426285378
+right_hip_roll_joint_damping:
+  frozen: false
+  max_value:
+  - 2.0
+  min_value:
+  - 0.0
+  name: right_hip_roll_joint_damping
+  nominal:
+  - 0.0
+  value:
+  - 0.0
+right_hip_roll_joint_friction:
+  frozen: false
+  max_value:
+  - 1.0
+  min_value:
+  - 0.0
+  name: right_hip_roll_joint_friction
+  nominal:
+  - 0.0
+  value:
+  - 2.9126569938318994e-05
+right_hip_roll_joint_kp:
+  frozen: false
+  max_value:
+  - 180.0
+  min_value:
+  - 50.0
+  name: right_hip_roll_joint_kp
+  nominal:
+  - 98.7
+  value:
+  - 112.01257256759322
+right_hip_roll_joint_kv:
+  frozen: false
+  max_value:
+  - 15.0
+  min_value:
+  - 1.0
+  name: right_hip_roll_joint_kv
+  nominal:
+  - 6.3
+  value:
+  - 7.933489331688787
+right_hip_yaw_joint_armature:
+  frozen: false
+  max_value:
+  - 0.1
+  min_value:
+  - 0.005
+  name: right_hip_yaw_joint_armature
+  nominal:
+  - 0.025
+  value:
+  - 0.027257150021965625
+right_hip_yaw_joint_damping:
+  frozen: false
+  max_value:
+  - 2.0
+  min_value:
+  - 0.0
+  name: right_hip_yaw_joint_damping
+  nominal:
+  - 0.0
+  value:
+  - 0.0
+right_hip_yaw_joint_friction:
+  frozen: false
+  max_value:
+  - 1.0
+  min_value:
+  - 0.0
+  name: right_hip_yaw_joint_friction
+  nominal:
+  - 0.0
+  value:
+  - 1.4622734108669061e-05
+right_hip_yaw_joint_kp:
+  frozen: false
+  max_value:
+  - 180.0
+  min_value:
+  - 50.0
+  name: right_hip_yaw_joint_kp
+  nominal:
+  - 98.7
+  value:
+  - 123.63321617487104
+right_hip_yaw_joint_kv:
+  frozen: false
+  max_value:
+  - 15.0
+  min_value:
+  - 1.0
+  name: right_hip_yaw_joint_kv
+  nominal:
+  - 6.3
+  value:
+  - 7.3530549348402054
+right_knee_joint_armature:
+  frozen: false
+  max_value:
+  - 0.15
+  min_value:
+  - 0.01
+  name: right_knee_joint_armature
+  nominal:
+  - 0.04
+  value:
+  - 0.044587969888630764
+right_knee_joint_damping:
+  frozen: false
+  max_value:
+  - 2.0
+  min_value:
+  - 0.0
+  name: right_knee_joint_damping
+  nominal:
+  - 0.0
+  value:
+  - 3.1600214329624885e-05
+right_knee_joint_friction:
+  frozen: false
+  max_value:
+  - 1.0
+  min_value:
+  - 0.0
+  name: right_knee_joint_friction
+  nominal:
+  - 0.0
+  value:
+  - 0.0
+right_knee_joint_kp:
+  frozen: false
+  max_value:
+  - 250.0
+  min_value:
+  - 80.0
+  name: right_knee_joint_kp
+  nominal:
+  - 157.7
+  value:
+  - 215.99546907666192
+right_knee_joint_kv:
+  frozen: false
+  max_value:
+  - 18.0
+  min_value:
+  - 3.0
+  name: right_knee_joint_kv
+  nominal:
+  - 10.1
+  value:
+  - 12.196481948651094

@@ -136,7 +136,7 @@ H1_2_FREESTANDING_XML = """\
   <worldbody>
     <geom name="ground" type="plane" size="10 10 0.1" pos="0 0 0" rgba="0.25 0.45 0.85 1" friction="1.0 0.005 0.0001"/>
     <light name="sun" pos="0 0 3" dir="0 0 -1" diffuse="1 1 1" specular="0.5 0.5 0.5" directional="true"/>
-    <camera name="head_on" pos="3 0 1.3" xyaxes="0 1 0 0 0 1" fovy="45" mode="trackcom"/>
+    <camera name="head_on" pos="4 0 1.3" xyaxes="0 1 0 0 0 1" fovy="45" mode="trackcom"/>
     <camera name="behind" pos="-3 0 1.3" xyaxes="0 -1 0 0 0 1"/>
     <camera name="right" pos="0 -3 1.3" xyaxes="1 0 0 0 0 1"/>
     <camera name="left" pos="0 3 1.3" xyaxes="-1 0 0 0 0 1"/>
@@ -800,6 +800,12 @@ def main():
 
     opt_params = params.copy()
     opt_params.update_from_vector(np.array(es.best.x))
+
+    out_dir = Path(__file__).resolve().parent
+    params.save_to_disk(out_dir / "h1_2_active_spi_params_x_0.yaml")
+    opt_params.save_to_disk(out_dir / "h1_2_active_spi_params_x_hat.yaml")
+    print(f"\n  Wrote initial parameters:  {out_dir / 'h1_2_active_spi_params_x_0.yaml'}")
+    print(f"  Wrote learned parameters:  {out_dir / 'h1_2_active_spi_params_x_hat.yaml'}")
 
     # ------------------------------------------------------------------
     # 7. Evaluation
